@@ -8,6 +8,7 @@ def on_gesture_shake():
     steps += 1
 input.on_gesture(Gesture.Shake, on_gesture_shake)
 def calc():
+    #todo later 
     pass
 def keypressed():
     if tinkercademy.ad_keyboard(ADKeys.A, AnalogPin.P0):
@@ -33,7 +34,7 @@ def menudisplay():
     else:
         OLED.clear()
 def on_forever():
-
+    menudisplay()
     keypressed()
     calc()
 forever(on_forever)

@@ -8,6 +8,7 @@ input.onGesture(Gesture.Shake, function on_gesture_shake() {
     steps += 1
 })
 function calc() {
+    // todo later 
     
 }
 
@@ -23,6 +24,7 @@ function keypressed() {
     
     if (tinkercademy.ADKeyboard(ADKeys.B, AnalogPin.P0)) {
         
+        state = 1
         OLED.writeStringNewLine("calories =" + ("" + cal))
         pause(1000)
         OLED.clear()
@@ -43,6 +45,7 @@ function menudisplay() {
 }
 
 forever(function on_forever() {
+    menudisplay()
     keypressed()
     calc()
 })
