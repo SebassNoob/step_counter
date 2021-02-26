@@ -1,3 +1,4 @@
+// METs x 3.5 x (your body weight in kilograms) / 200 = calories burned per minute.
 let steps = 0
 let cal = 0
 let weight = 50

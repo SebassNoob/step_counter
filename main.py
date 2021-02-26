@@ -1,3 +1,5 @@
+
+#METs x 3.5 x (your body weight in kilograms) / 200 = calories burned per minute.
 steps = 0
 cal = 0
 weight = 50
