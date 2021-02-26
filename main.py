@@ -3,7 +3,10 @@ cal = 0
 weight = 50
 state = 0
 setup = 0
-currentspd = ""
+i = 0
+stage = 0
+finalMET = 0
+currentspd = [2.0,3.3,13.5]
 spd = ["slow","medium","fast"]
 OLED.init(128, 64)
 
@@ -19,7 +22,7 @@ def calc():
 
 
 def keypressed():
-    global state,weight,setup
+    global state,weight,setup,i
     if tinkercademy.ad_keyboard(ADKeys.A, AnalogPin.P0):
         if setup == 0:
             weight += 1
@@ -27,7 +30,10 @@ def keypressed():
             menudisplay()
 
         if setup == 1:
-            pass
+            i += 1
+            OLED.clear()
+            menudisplay()
+
 
         if setup == 2:
             OLED.clear()
@@ -44,6 +50,10 @@ def keypressed():
             OLED.clear()
             menudisplay()
 
+        if setup == 1:
+            i += 1
+            OLED.clear()
+            menudisplay()
         if setup == 2:
             OLED.clear()
             state = 1
@@ -56,25 +66,33 @@ def keypressed():
     if tinkercademy.ad_keyboard(ADKeys.C, AnalogPin.P0):
         
         if setup == 0:
+            
             setup = 1
             OLED.clear()
             menudisplay()
-        if setup == 1:
+        
+        if setup == 1 and stage == 1:
+            
             setup = 2
+            stage = 0
+            finalMET = currentspd[i]
             OLED.clear()
             menudisplay()
+    
+    if tinkercademy.ad_keyboard(ADKeys.E, AnalogPin.P0):
+        control.reset()
 
 
 
 
 def menudisplay():
-    global state,setup,weight,currentspd
+    global state,setup,weight,currentspd,i
     if setup == 0:
         OLED.write_string_new_line("Set weight:" + str(weight) + "kg")
         OLED.write_string_new_line("Button C to confirm")
 
     if setup == 1:
-        OLED.write_string_new_line("Set speed of walk:" + str(currentspd) + "kg")
+        OLED.write_string_new_line("Set speed of walk:" + spd[i])
         OLED.write_string_new_line("Button C to confirm")
 
     if setup == 2:

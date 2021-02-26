@@ -3,7 +3,10 @@ let cal = 0
 let weight = 50
 let state = 0
 let setup = 0
-let currentspd = ""
+let i = 0
+let stage = 0
+let finalMET = 0
+let currentspd = [2.0, 3.3, 13.5]
 let spd = ["slow", "medium", "fast"]
 OLED.init(128, 64)
 input.onGesture(Gesture.Shake, function on_gesture_shake() {
@@ -16,6 +19,8 @@ function calc() {
 }
 
 function keypressed() {
+    let stage: number;
+    let finalMET: number;
     
     if (tinkercademy.ADKeyboard(ADKeys.A, AnalogPin.P0)) {
         if (setup == 0) {
@@ -25,7 +30,9 @@ function keypressed() {
         }
         
         if (setup == 1) {
-            
+            i += 1
+            OLED.clear()
+            menudisplay()
         }
         
         if (setup == 2) {
@@ -43,6 +50,12 @@ function keypressed() {
     if (tinkercademy.ADKeyboard(ADKeys.B, AnalogPin.P0)) {
         if (setup == 0) {
             weight -= 1
+            OLED.clear()
+            menudisplay()
+        }
+        
+        if (setup == 1) {
+            i += 1
             OLED.clear()
             menudisplay()
         }
@@ -66,12 +79,18 @@ function keypressed() {
             menudisplay()
         }
         
-        if (setup == 1) {
+        if (setup == 1 && stage == 1) {
             setup = 2
+            stage = 0
+            finalMET = currentspd[i]
             OLED.clear()
             menudisplay()
         }
         
+    }
+    
+    if (tinkercademy.ADKeyboard(ADKeys.E, AnalogPin.P0)) {
+        control.reset()
     }
     
 }
@@ -84,7 +103,7 @@ function menudisplay() {
     }
     
     if (setup == 1) {
-        OLED.writeStringNewLine("Set speed of walk:" + ("" + currentspd) + "kg")
+        OLED.writeStringNewLine("Set speed of walk:" + spd[i])
         OLED.writeStringNewLine("Button C to confirm")
     }
     
