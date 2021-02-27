@@ -9,8 +9,10 @@ setupB = 0
 i = 0
 stage = 0
 finalMET = 0
-currentspd = [2.0,3.3,13.5]
-spd = ["slow","medium","fast"]
+calPerMin = 0
+time = 0
+currentspd = [2.9,3.4,7.6,14.3]
+spd = ["stroll","walk","jog","sprint"]
 OLED.init(128, 64)
 
 def on_gesture_shake():
@@ -18,14 +20,17 @@ def on_gesture_shake():
     steps += 1
 input.on_gesture(Gesture.Shake, on_gesture_shake)
 def calc():
-    global cal
-    pass
+    global cal,finalMET, calPerMin,time
+    calPerMin = (finalMET*weight*3.5)/200
+    cal = calPerMin*time
+
+
 
 
 
 
 def keypressed():
-    global state,weight,setupA,i,setupB
+    global state,weight,setupA,i,setupB,finalMET,cal,calPerMin
     if tinkercademy.ad_keyboard(ADKeys.A, AnalogPin.P0):
         if setupA == 0:
             weight -= 1
@@ -36,8 +41,8 @@ def keypressed():
             i -= 1
             if i < 0:
                 i = 0
-            if i > 2:
-                i = 2
+            if i > 3:
+                i = 3
             OLED.clear()
             menudisplay()
 
@@ -61,14 +66,14 @@ def keypressed():
             i += 1
             if i < 0:
                 i = 0
-            if i > 2:
-                i = 2
+            if i > 3:
+                i = 3
             OLED.clear()
             menudisplay()
         if setupA == 1 and setupB == 1:
             OLED.clear()
             state = 1
-            OLED.write_string("calories = " + str(cal))
+            OLED.write_string("calories per minute = " + str(calPerMin))
             pause(5000)
             OLED.clear()
             state = 0

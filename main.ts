@@ -8,8 +8,10 @@ let setupB = 0
 let i = 0
 let stage = 0
 let finalMET = 0
-let currentspd = [2.0, 3.3, 13.5]
-let spd = ["slow", "medium", "fast"]
+let calPerMin = 0
+let time = 0
+let currentspd = [2.9, 3.4, 7.6, 14.3]
+let spd = ["stroll", "walk", "jog", "sprint"]
 OLED.init(128, 64)
 input.onGesture(Gesture.Shake, function on_gesture_shake() {
     
@@ -17,11 +19,11 @@ input.onGesture(Gesture.Shake, function on_gesture_shake() {
 })
 function calc() {
     
-    
+    calPerMin = finalMET * weight * 3.5 / 200
+    cal = calPerMin * time
 }
 
 function keypressed() {
-    let finalMET: number;
     
     if (tinkercademy.ADKeyboard(ADKeys.A, AnalogPin.P0)) {
         if (setupA == 0) {
@@ -36,8 +38,8 @@ function keypressed() {
                 i = 0
             }
             
-            if (i > 2) {
-                i = 2
+            if (i > 3) {
+                i = 3
             }
             
             OLED.clear()
@@ -69,8 +71,8 @@ function keypressed() {
                 i = 0
             }
             
-            if (i > 2) {
-                i = 2
+            if (i > 3) {
+                i = 3
             }
             
             OLED.clear()
@@ -80,7 +82,7 @@ function keypressed() {
         if (setupA == 1 && setupB == 1) {
             OLED.clear()
             state = 1
-            OLED.writeString("calories = " + ("" + cal))
+            OLED.writeString("calories per minute = " + ("" + calPerMin))
             pause(5000)
             OLED.clear()
             state = 0
