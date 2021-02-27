@@ -4,7 +4,8 @@ steps = 0
 cal = 0
 weight = 50
 state = 0
-setup = 0
+setupA = 0
+setupB = 0
 i = 0
 stage = 0
 finalMET = 0
@@ -24,20 +25,24 @@ def calc():
 
 
 def keypressed():
-    global state,weight,setup,i
+    global state,weight,setupA,i,setupB
     if tinkercademy.ad_keyboard(ADKeys.A, AnalogPin.P0):
-        if setup == 0:
-            weight += 1
+        if setupA == 0:
+            weight -= 1
             OLED.clear()
             menudisplay()
 
-        if setup == 1:
-            i += 1
+        if setupB == 0 and setupA == 1:
+            i -= 1
+            if i < 0:
+                i = 0
+            if i > 2:
+                i = 2
             OLED.clear()
             menudisplay()
 
 
-        if setup == 2:
+        if setupA == 1 and setupB == 1:
             OLED.clear()
             state = 1
             OLED.write_string("steps = " + str(steps))
@@ -47,16 +52,20 @@ def keypressed():
             menudisplay()
 
     if tinkercademy.ad_keyboard(ADKeys.B, AnalogPin.P0):
-        if setup == 0:
-            weight -= 1
+        if setupA == 0:
+            weight += 1
             OLED.clear()
             menudisplay()
 
-        if setup == 1:
+        if setupA == 1 and setupB == 0:
             i += 1
+            if i < 0:
+                i = 0
+            if i > 2:
+                i = 2
             OLED.clear()
             menudisplay()
-        if setup == 2:
+        if setupA == 1 and setupB == 1:
             OLED.clear()
             state = 1
             OLED.write_string("calories = " + str(cal))
@@ -67,16 +76,15 @@ def keypressed():
     
     if tinkercademy.ad_keyboard(ADKeys.C, AnalogPin.P0):
         
-        if setup == 0:
-            
-            setup = 1
+        if setupA == 0:
+            pause(100)
+            setupA = 1
             OLED.clear()
             menudisplay()
         
-        if setup == 1 and stage == 1:
-            
-            setup = 2
-            stage = 0
+        elif setupA == 1 and setupB == 0:
+            pause(100)
+            setupB = 1
             finalMET = currentspd[i]
             OLED.clear()
             menudisplay()
@@ -88,16 +96,17 @@ def keypressed():
 
 
 def menudisplay():
-    global state,setup,weight,currentspd,i
-    if setup == 0:
+    global state,setupA,weight,currentspd,i,setupB
+    if setupA == 0:
         OLED.write_string_new_line("Set weight:" + str(weight) + "kg")
         OLED.write_string_new_line("Button C to confirm")
 
-    if setup == 1:
-        OLED.write_string_new_line("Set speed of walk:" + spd[i])
+    if setupA == 1 and setupB == 0:
+        OLED.write_string_new_line("Set speed of walk:" )
+        OLED.write_string_new_line(spd[i])
         OLED.write_string_new_line("Button C to confirm")
 
-    if setup == 2:
+    if setupA == 1 and setupB == 1:
         if state == 0:
             OLED.write_string_new_line("A. Show steps")
             OLED.write_string_new_line("B. Show calories")
@@ -113,13 +122,17 @@ def weightensure():
     if weight >= 300:
         weight = 300      
 
+
+    
     
 
 menudisplay()
 def on_forever():
+    
     weightensure()
     keypressed()
     calc()
+    
 forever(on_forever)
 
 

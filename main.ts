@@ -3,7 +3,8 @@ let steps = 0
 let cal = 0
 let weight = 50
 let state = 0
-let setup = 0
+let setupA = 0
+let setupB = 0
 let i = 0
 let stage = 0
 let finalMET = 0
@@ -20,23 +21,30 @@ function calc() {
 }
 
 function keypressed() {
-    let stage: number;
     let finalMET: number;
     
     if (tinkercademy.ADKeyboard(ADKeys.A, AnalogPin.P0)) {
-        if (setup == 0) {
-            weight += 1
+        if (setupA == 0) {
+            weight -= 1
             OLED.clear()
             menudisplay()
         }
         
-        if (setup == 1) {
-            i += 1
+        if (setupB == 0 && setupA == 1) {
+            i -= 1
+            if (i < 0) {
+                i = 0
+            }
+            
+            if (i > 2) {
+                i = 2
+            }
+            
             OLED.clear()
             menudisplay()
         }
         
-        if (setup == 2) {
+        if (setupA == 1 && setupB == 1) {
             OLED.clear()
             state = 1
             OLED.writeString("steps = " + ("" + steps))
@@ -49,19 +57,27 @@ function keypressed() {
     }
     
     if (tinkercademy.ADKeyboard(ADKeys.B, AnalogPin.P0)) {
-        if (setup == 0) {
-            weight -= 1
+        if (setupA == 0) {
+            weight += 1
             OLED.clear()
             menudisplay()
         }
         
-        if (setup == 1) {
+        if (setupA == 1 && setupB == 0) {
             i += 1
+            if (i < 0) {
+                i = 0
+            }
+            
+            if (i > 2) {
+                i = 2
+            }
+            
             OLED.clear()
             menudisplay()
         }
         
-        if (setup == 2) {
+        if (setupA == 1 && setupB == 1) {
             OLED.clear()
             state = 1
             OLED.writeString("calories = " + ("" + cal))
@@ -74,15 +90,14 @@ function keypressed() {
     }
     
     if (tinkercademy.ADKeyboard(ADKeys.C, AnalogPin.P0)) {
-        if (setup == 0) {
-            setup = 1
+        if (setupA == 0) {
+            pause(100)
+            setupA = 1
             OLED.clear()
             menudisplay()
-        }
-        
-        if (setup == 1 && stage == 1) {
-            setup = 2
-            stage = 0
+        } else if (setupA == 1 && setupB == 0) {
+            pause(100)
+            setupB = 1
             finalMET = currentspd[i]
             OLED.clear()
             menudisplay()
@@ -98,17 +113,18 @@ function keypressed() {
 
 function menudisplay() {
     
-    if (setup == 0) {
+    if (setupA == 0) {
         OLED.writeStringNewLine("Set weight:" + ("" + weight) + "kg")
         OLED.writeStringNewLine("Button C to confirm")
     }
     
-    if (setup == 1) {
-        OLED.writeStringNewLine("Set speed of walk:" + spd[i])
+    if (setupA == 1 && setupB == 0) {
+        OLED.writeStringNewLine("Set speed of walk:")
+        OLED.writeStringNewLine(spd[i])
         OLED.writeStringNewLine("Button C to confirm")
     }
     
-    if (setup == 2) {
+    if (setupA == 1 && setupB == 1) {
         if (state == 0) {
             OLED.writeStringNewLine("A. Show steps")
             OLED.writeStringNewLine("B. Show calories")
