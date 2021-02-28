@@ -1,4 +1,4 @@
-#version-1.1, build-6
+#version-1.1, build-8
 
 steps = 0
 cal = 0
@@ -20,6 +20,9 @@ OLED.init(128, 64)
 def on_gesture_shake():
     global steps
     steps += 1
+    pins.digital_write_pin(DigitalPin.P1, 1)
+    pause(100)
+    pins.digital_write_pin(DigitalPin.P1, 0)
 input.on_gesture(Gesture.Shake, on_gesture_shake)
 
 def calc():
@@ -111,7 +114,7 @@ def keypressed():
             OLED.write_string_new_line(str(calPerMin))
             if time == 0:
                 OLED.write_string_new_line("")
-                OLED.write_string_new_line("current time:0min")
+                OLED.write_string_new_line("current time: 0min")
                 OLED.write_string_new_line("set time in settings")
             if time != 0:
                 OLED.write_string_new_line("calories: " + str(cal) )
@@ -259,8 +262,8 @@ def weightensure():
 def autoTime():
     global time
     for index in range(10000000):
-        pause(60000)
-        time += 1
+        pause(6000)
+        time += 0.1
     
 def onIn_background():
     autoTime()

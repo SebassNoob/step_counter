@@ -1,4 +1,4 @@
-// version-1.1, build-6
+// version-1.1, build-8
 let steps = 0
 let cal = 0
 let weight = 50
@@ -16,6 +16,9 @@ OLED.init(128, 64)
 input.onGesture(Gesture.Shake, function on_gesture_shake() {
     
     steps += 1
+    pins.digitalWritePin(DigitalPin.P1, 1)
+    pause(100)
+    pins.digitalWritePin(DigitalPin.P1, 0)
 })
 function calc() {
     
@@ -128,7 +131,7 @@ function keypressed() {
             OLED.writeStringNewLine("" + calPerMin)
             if (time == 0) {
                 OLED.writeStringNewLine("")
-                OLED.writeStringNewLine("current time:0min")
+                OLED.writeStringNewLine("current time: 0min")
                 OLED.writeStringNewLine("set time in settings")
             }
             
@@ -310,8 +313,8 @@ function weightensure() {
 function autoTime() {
     
     for (let index = 0; index < 10000000; index++) {
-        pause(60000)
-        time += 1
+        pause(6000)
+        time += 0.1
     }
 }
 
