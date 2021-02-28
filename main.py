@@ -1,4 +1,4 @@
-#version-1.1, build-3
+#version-1.1, build-6
 
 steps = 0
 cal = 0
@@ -49,7 +49,7 @@ def keypressed():
         if setupA == 1 and setupB == 1 and state == 0:
             OLED.clear()
             state = 1
-            OLED.write_string("steps = " + str(steps))
+            OLED.write_string("steps: " + str(steps))
             
             pause(5000)
             OLED.clear()
@@ -107,14 +107,16 @@ def keypressed():
         if setupA == 1 and setupB == 1 and state == 0:
             OLED.clear()
             state = 1
-            OLED.write_string("calories/min = ")
+            OLED.write_string("calories/min: ")
             OLED.write_string_new_line(str(calPerMin))
             if time == 0:
-                OLED.write_string_new_line("time = 0 min,")
+                OLED.write_string_new_line("")
+                OLED.write_string_new_line("current time:0min")
                 OLED.write_string_new_line("set time in settings")
             if time != 0:
-                OLED.write_string_new_line("calories = " + str(cal) )
-                OLED.write_string_new_line("(time = " + str(time) + "min)")
+                OLED.write_string_new_line("calories: " + str(cal) )
+                OLED.write_string_new_line("")
+                OLED.write_string_new_line("(current time: " + str(time) + "min)")
             pause(5000)
             OLED.clear()
             state = 0
@@ -204,16 +206,21 @@ def keypressed():
 def menudisplay():
     global state,setupA,weight,currentspd,i,setupB
     if setupA == 0:
-        OLED.write_string_new_line("Set weight:" + str(weight) + "kg")
+        OLED.write_string_new_line("STARTUP MODE")
+        OLED.write_string_new_line("")
+        OLED.write_string_new_line("Set weight: " + str(weight) + "kg")
         OLED.write_string_new_line("C to confirm")
 
     if setupA == 1 and setupB == 0:
-        OLED.write_string_new_line("Set mode:" )
+        OLED.write_string_new_line("STARTUP MODE")
+        OLED.write_string_new_line("")
+        OLED.write_string_new_line("Set mode: " )
         OLED.write_string_new_line(spd[i])
         OLED.write_string_new_line("C to confirm")
 
     if setupA == 1 and setupB == 1:
         if state == 0:
+            OLED.write_string_new_line("MENU")
             OLED.write_string_new_line("A. Show steps")
             OLED.write_string_new_line("B. Show calories")
             OLED.write_string_new_line("C. Settings")
@@ -221,19 +228,20 @@ def menudisplay():
         if state == 1:
             pass
         if state == 2:
+            OLED.write_string_new_line("SETTINGS")
             OLED.write_string_new_line("A. Set weight")
             OLED.write_string_new_line("B. Set mode")
             OLED.write_string_new_line("C. Set time")
             OLED.write_string_new_line("D. Reset all")
             OLED.write_string_new_line("E. Back")
         if state == 3:
-            OLED.write_string_new_line("time = " + str(time) + "min")
+            OLED.write_string_new_line("time: " + str(time) + "min")
             OLED.write_string_new_line("C to confirm")
         if state == 4:
-            OLED.write_string_new_line("weight = " + str(weight) + "kg")
+            OLED.write_string_new_line("weight: " + str(weight) + "kg")
             OLED.write_string_new_line("C to confirm")
         if state == 5:
-            OLED.write_string_new_line("mode = " )
+            OLED.write_string_new_line("mode: " )
             OLED.write_string_new_line(str(spd[i]))
             OLED.write_string_new_line("C to confirm")
             

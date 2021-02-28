@@ -1,4 +1,4 @@
-// version-1.1, build-3
+// version-1.1, build-6
 let steps = 0
 let cal = 0
 let weight = 50
@@ -49,7 +49,7 @@ function keypressed() {
         if (setupA == 1 && setupB == 1 && state == 0) {
             OLED.clear()
             state = 1
-            OLED.writeString("steps = " + ("" + steps))
+            OLED.writeString("steps: " + ("" + steps))
             pause(5000)
             OLED.clear()
             state = 0
@@ -124,16 +124,18 @@ function keypressed() {
         if (setupA == 1 && setupB == 1 && state == 0) {
             OLED.clear()
             state = 1
-            OLED.writeString("calories/min = ")
+            OLED.writeString("calories/min: ")
             OLED.writeStringNewLine("" + calPerMin)
             if (time == 0) {
-                OLED.writeStringNewLine("time = 0 min,")
+                OLED.writeStringNewLine("")
+                OLED.writeStringNewLine("current time:0min")
                 OLED.writeStringNewLine("set time in settings")
             }
             
             if (time != 0) {
-                OLED.writeStringNewLine("calories = " + ("" + cal))
-                OLED.writeStringNewLine("(time = " + ("" + time) + "min)")
+                OLED.writeStringNewLine("calories: " + ("" + cal))
+                OLED.writeStringNewLine("")
+                OLED.writeStringNewLine("(current time: " + ("" + time) + "min)")
             }
             
             pause(5000)
@@ -238,18 +240,23 @@ function keypressed() {
 function menudisplay() {
     
     if (setupA == 0) {
-        OLED.writeStringNewLine("Set weight:" + ("" + weight) + "kg")
+        OLED.writeStringNewLine("STARTUP MODE")
+        OLED.writeStringNewLine("")
+        OLED.writeStringNewLine("Set weight: " + ("" + weight) + "kg")
         OLED.writeStringNewLine("C to confirm")
     }
     
     if (setupA == 1 && setupB == 0) {
-        OLED.writeStringNewLine("Set mode:")
+        OLED.writeStringNewLine("STARTUP MODE")
+        OLED.writeStringNewLine("")
+        OLED.writeStringNewLine("Set mode: ")
         OLED.writeStringNewLine(spd[i])
         OLED.writeStringNewLine("C to confirm")
     }
     
     if (setupA == 1 && setupB == 1) {
         if (state == 0) {
+            OLED.writeStringNewLine("MENU")
             OLED.writeStringNewLine("A. Show steps")
             OLED.writeStringNewLine("B. Show calories")
             OLED.writeStringNewLine("C. Settings")
@@ -260,6 +267,7 @@ function menudisplay() {
         }
         
         if (state == 2) {
+            OLED.writeStringNewLine("SETTINGS")
             OLED.writeStringNewLine("A. Set weight")
             OLED.writeStringNewLine("B. Set mode")
             OLED.writeStringNewLine("C. Set time")
@@ -268,17 +276,17 @@ function menudisplay() {
         }
         
         if (state == 3) {
-            OLED.writeStringNewLine("time = " + ("" + time) + "min")
+            OLED.writeStringNewLine("time: " + ("" + time) + "min")
             OLED.writeStringNewLine("C to confirm")
         }
         
         if (state == 4) {
-            OLED.writeStringNewLine("weight = " + ("" + weight) + "kg")
+            OLED.writeStringNewLine("weight: " + ("" + weight) + "kg")
             OLED.writeStringNewLine("C to confirm")
         }
         
         if (state == 5) {
-            OLED.writeStringNewLine("mode = ")
+            OLED.writeStringNewLine("mode: ")
             OLED.writeStringNewLine("" + spd[i])
             OLED.writeStringNewLine("C to confirm")
         }
