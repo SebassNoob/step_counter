@@ -1,4 +1,4 @@
-// version-1.1, build-2
+// version-1.1, build-3
 let steps = 0
 let cal = 0
 let weight = 50
@@ -301,8 +301,10 @@ function weightensure() {
 
 function autoTime() {
     
-    pause(60000)
-    time += 1
+    for (let index = 0; index < 10000000; index++) {
+        pause(60000)
+        time += 1
+    }
 }
 
 control.inBackground(function onIn_background() {

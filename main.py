@@ -1,4 +1,4 @@
-#version-1.1, build-2
+#version-1.1, build-3
 
 steps = 0
 cal = 0
@@ -14,6 +14,7 @@ time = 0
 
 currentspd = [2.9,3.4,5.7,12.7]
 spd = ["stroll (<4km/h)","walk (4-7km/h)","jog (7-10km/h)","sprint (>10km/h)"]
+
 OLED.init(128, 64)
 
 def on_gesture_shake():
@@ -249,8 +250,9 @@ def weightensure():
 
 def autoTime():
     global time
-    pause(60000)
-    time += 1
+    for index in range(10000000):
+        pause(60000)
+        time += 1
     
 def onIn_background():
     autoTime()
