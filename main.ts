@@ -1,4 +1,4 @@
-// testversion-8, build-2
+// version-1.1, build-2
 let steps = 0
 let cal = 0
 let weight = 50
@@ -9,7 +9,7 @@ let i = 0
 let stage = 0
 let finalMET = 0
 let calPerMin = 0
-let time = 60
+let time = 0
 let currentspd = [2.9, 3.4, 5.7, 12.7]
 let spd = ["stroll (<4km/h)", "walk (4-7km/h)", "jog (7-10km/h)", "sprint (>10km/h)"]
 OLED.init(128, 64)
@@ -127,7 +127,8 @@ function keypressed() {
             OLED.writeString("calories/min = ")
             OLED.writeStringNewLine("" + calPerMin)
             if (time == 0) {
-                OLED.writeStringNewLine("input time in settings to show calorie count")
+                OLED.writeStringNewLine("time = 0 min,")
+                OLED.writeStringNewLine("set time in settings")
             }
             
             if (time != 0) {
@@ -238,7 +239,7 @@ function menudisplay() {
     
     if (setupA == 0) {
         OLED.writeStringNewLine("Set weight:" + ("" + weight) + "kg")
-        OLED.writeStringNewLine("Button C to confirm")
+        OLED.writeStringNewLine("C to confirm")
     }
     
     if (setupA == 1 && setupB == 0) {
@@ -277,7 +278,8 @@ function menudisplay() {
         }
         
         if (state == 5) {
-            OLED.writeStringNewLine("mode = " + ("" + spd[i]))
+            OLED.writeStringNewLine("mode = ")
+            OLED.writeStringNewLine("" + spd[i])
             OLED.writeStringNewLine("C to confirm")
         }
         
@@ -297,6 +299,15 @@ function weightensure() {
     
 }
 
+function autoTime() {
+    
+    pause(60000)
+    time += 1
+}
+
+control.inBackground(function onIn_background() {
+    autoTime()
+})
 menudisplay()
 forever(function on_forever() {
     weightensure()

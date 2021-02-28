@@ -1,4 +1,4 @@
-#testversion-8, build-2
+#version-1.1, build-2
 
 steps = 0
 cal = 0
@@ -10,7 +10,7 @@ i = 0
 stage = 0
 finalMET = 0
 calPerMin = 0
-time = 60
+time = 0
 
 currentspd = [2.9,3.4,5.7,12.7]
 spd = ["stroll (<4km/h)","walk (4-7km/h)","jog (7-10km/h)","sprint (>10km/h)"]
@@ -20,6 +20,7 @@ def on_gesture_shake():
     global steps
     steps += 1
 input.on_gesture(Gesture.Shake, on_gesture_shake)
+
 def calc():
     global cal,finalMET, calPerMin,time
     calPerMin = (finalMET*weight*3.5)/200
@@ -88,10 +89,6 @@ def keypressed():
             OLED.clear()
             menudisplay()
     
-        
-
-    
-
     if tinkercademy.ad_keyboard(ADKeys.B, AnalogPin.P0) :
         if setupA == 0 and state == 0:
             weight += 1
@@ -112,7 +109,8 @@ def keypressed():
             OLED.write_string("calories/min = ")
             OLED.write_string_new_line(str(calPerMin))
             if time == 0:
-                OLED.write_string_new_line("input time in settings to show calorie count")
+                OLED.write_string_new_line("time = 0 min,")
+                OLED.write_string_new_line("set time in settings")
             if time != 0:
                 OLED.write_string_new_line("calories = " + str(cal) )
                 OLED.write_string_new_line("(time = " + str(time) + "min)")
@@ -206,7 +204,7 @@ def menudisplay():
     global state,setupA,weight,currentspd,i,setupB
     if setupA == 0:
         OLED.write_string_new_line("Set weight:" + str(weight) + "kg")
-        OLED.write_string_new_line("Button C to confirm")
+        OLED.write_string_new_line("C to confirm")
 
     if setupA == 1 and setupB == 0:
         OLED.write_string_new_line("Set mode:" )
@@ -234,7 +232,8 @@ def menudisplay():
             OLED.write_string_new_line("weight = " + str(weight) + "kg")
             OLED.write_string_new_line("C to confirm")
         if state == 5:
-            OLED.write_string_new_line("mode = " + str(spd[i]) )
+            OLED.write_string_new_line("mode = " )
+            OLED.write_string_new_line(str(spd[i]))
             OLED.write_string_new_line("C to confirm")
             
 
@@ -248,8 +247,14 @@ def weightensure():
         weight = 300      
 
 
+def autoTime():
+    global time
+    pause(60000)
+    time += 1
     
-    
+def onIn_background():
+    autoTime()
+control.in_background(onIn_background)
 
 menudisplay()
 def on_forever():

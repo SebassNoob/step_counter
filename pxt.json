@@ -1,5 +1,5 @@
 {
-    "name": "step_counter_version1",
+    "name": "step_counter_version1.1",
     "description": "",
     "dependencies": {
         "core": "*",
