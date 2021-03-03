@@ -1,5 +1,5 @@
-// version-1.2, build-11
-let steps = 50
+// version-1.2, build-12
+let steps = 0
 let cal = 0
 let weight = 50
 let state = 0

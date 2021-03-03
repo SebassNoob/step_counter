@@ -1,6 +1,6 @@
-#version-1.2, build-11
+#version-1.2, build-12
 
-steps = 50
+steps = 0
 cal = 0
 weight = 50
 state = 0
