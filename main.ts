@@ -1,5 +1,5 @@
-// version-1.1, build-8
-let steps = 0
+// version-1.2, build-11
+let steps = 50
 let cal = 0
 let weight = 50
 let state = 0
@@ -10,12 +10,18 @@ let stage = 0
 let finalMET = 0
 let calPerMin = 0
 let time = 0
+let distStep = 0
+let dist = 0
+let aveSpd = 0
+let aveSpdfinal = 0
+let isStepped = 0
 let currentspd = [2.9, 3.4, 5.7, 12.7]
-let spd = ["stroll (<4km/h)", "walk (4-7km/h)", "jog (7-10km/h)", "sprint (>10km/h)"]
+let spd = ["stroll", "walk ", "jog ", "sprint "]
 OLED.init(128, 64)
 input.onGesture(Gesture.Shake, function on_gesture_shake() {
     
     steps += 1
+    isStepped = 1
     pins.digitalWritePin(DigitalPin.P1, 1)
     pause(100)
     pins.digitalWritePin(DigitalPin.P1, 0)
@@ -23,7 +29,31 @@ input.onGesture(Gesture.Shake, function on_gesture_shake() {
 function calc() {
     
     calPerMin = finalMET * weight * 3.5 / 200
-    cal = calPerMin * time
+    cal = calPerMin * (time / 60)
+    dist = distStep * steps
+    aveSpd = dist / time
+}
+
+function mode() {
+    
+    aveSpdfinal = 3.6 * aveSpd
+    if (aveSpdfinal < 4) {
+        i = 0
+    }
+    
+    if (aveSpdfinal >= 4 && aveSpdfinal < 7) {
+        i = 1
+    }
+    
+    if (aveSpdfinal >= 7 && aveSpdfinal < 10) {
+        i = 2
+    }
+    
+    if (aveSpdfinal >= 10) {
+        i = 3
+    }
+    
+    finalMET = currentspd[i]
 }
 
 function keypressed() {
@@ -36,13 +66,9 @@ function keypressed() {
         }
         
         if (setupB == 0 && setupA == 1 && state == 0) {
-            i -= 1
-            if (i < 0) {
-                i = 0
-            }
-            
-            if (i > 3) {
-                i = 3
+            distStep -= 0.1
+            if (distStep < 0) {
+                distStep = 0
             }
             
             OLED.clear()
@@ -52,7 +78,8 @@ function keypressed() {
         if (setupA == 1 && setupB == 1 && state == 0) {
             OLED.clear()
             state = 1
-            OLED.writeString("steps: " + ("" + steps))
+            OLED.writeStringNewLine("steps: " + ("" + steps))
+            OLED.writeStringNewLine("distance: " + ("" + dist / 1000) + "km")
             pause(5000)
             OLED.clear()
             state = 0
@@ -72,8 +99,8 @@ function keypressed() {
                 time = 0
             }
             
-            if (time > 1000000) {
-                time = 1000000
+            if (time > 10000000) {
+                time = 10000000
             }
             
             OLED.clear()
@@ -88,13 +115,9 @@ function keypressed() {
         }
         
         if (state == 5) {
-            i -= 1
-            if (i < 0) {
-                i = 0
-            }
-            
-            if (i > 3) {
-                i = 3
+            distStep -= 0.1
+            if (distStep < 0) {
+                distStep = 0
             }
             
             OLED.clear()
@@ -111,13 +134,9 @@ function keypressed() {
         }
         
         if (setupA == 1 && setupB == 0 && state == 0) {
-            i += 1
-            if (i < 0) {
-                i = 0
-            }
-            
-            if (i > 3) {
-                i = 3
+            distStep += 0.1
+            if (distStep < 0) {
+                distStep = 0
             }
             
             OLED.clear()
@@ -131,14 +150,15 @@ function keypressed() {
             OLED.writeStringNewLine("" + calPerMin)
             if (time == 0) {
                 OLED.writeStringNewLine("")
-                OLED.writeStringNewLine("current time: 0min")
+                OLED.writeStringNewLine("current time: 0sec")
                 OLED.writeStringNewLine("set time in settings")
             }
             
             if (time != 0) {
                 OLED.writeStringNewLine("calories: " + ("" + cal))
                 OLED.writeStringNewLine("")
-                OLED.writeStringNewLine("(current time: " + ("" + time) + "min)")
+                OLED.writeStringNewLine("(current time: " + ("" + time) + "sec)")
+                OLED.writeStringNewLine("avg speed: " + ("" + aveSpdfinal) + "km/h")
             }
             
             pause(5000)
@@ -176,13 +196,9 @@ function keypressed() {
         }
         
         if (state == 5) {
-            i += 1
-            if (i < 0) {
-                i = 0
-            }
-            
-            if (i > 3) {
-                i = 3
+            distStep += 0.1
+            if (distStep < 0) {
+                distStep = 0
             }
             
             OLED.clear()
@@ -200,7 +216,6 @@ function keypressed() {
         } else if (setupA == 1 && setupB == 0 && state == 0) {
             pause(100)
             setupB = 1
-            finalMET = currentspd[i]
             OLED.clear()
             menudisplay()
         } else if (setupA == 1 && setupB == 1 && state == 0) {
@@ -252,8 +267,7 @@ function menudisplay() {
     if (setupA == 1 && setupB == 0) {
         OLED.writeStringNewLine("STARTUP MODE")
         OLED.writeStringNewLine("")
-        OLED.writeStringNewLine("Set mode: ")
-        OLED.writeStringNewLine(spd[i])
+        OLED.writeStringNewLine("avg dist/step:" + ("" + distStep) + "m")
         OLED.writeStringNewLine("C to confirm")
     }
     
@@ -272,14 +286,14 @@ function menudisplay() {
         if (state == 2) {
             OLED.writeStringNewLine("SETTINGS")
             OLED.writeStringNewLine("A. Set weight")
-            OLED.writeStringNewLine("B. Set mode")
+            OLED.writeStringNewLine("B. Set avg dist/step")
             OLED.writeStringNewLine("C. Set time")
             OLED.writeStringNewLine("D. Reset all")
             OLED.writeStringNewLine("E. Back")
         }
         
         if (state == 3) {
-            OLED.writeStringNewLine("time: " + ("" + time) + "min")
+            OLED.writeStringNewLine("time: " + ("" + time) + "sec")
             OLED.writeStringNewLine("C to confirm")
         }
         
@@ -289,8 +303,7 @@ function menudisplay() {
         }
         
         if (state == 5) {
-            OLED.writeStringNewLine("mode: ")
-            OLED.writeStringNewLine("" + spd[i])
+            OLED.writeStringNewLine("avg dist/step:" + ("" + distStep) + "m")
             OLED.writeStringNewLine("C to confirm")
         }
         
@@ -312,10 +325,13 @@ function weightensure() {
 
 function autoTime() {
     
-    for (let index = 0; index < 10000000; index++) {
-        pause(6000)
-        time += 0.1
+    if (isStepped == 0) {
+        for (let index = 0; index < 1000000000; index++) {
+            pause(1000)
+            time += 1
+        }
     }
+    
 }
 
 control.inBackground(function onIn_background() {
@@ -323,6 +339,7 @@ control.inBackground(function onIn_background() {
 })
 menudisplay()
 forever(function on_forever() {
+    mode()
     weightensure()
     keypressed()
     calc()
